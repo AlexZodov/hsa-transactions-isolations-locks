@@ -1,0 +1,40 @@
+version: "3.7"
+
+services:
+    hsa_transactions_isolations_locks_pg_db:
+        container_name: hsa_transactions_isolations_locks_pg_db
+        image: arm64v8/postgres:latest
+        environment:
+            POSTGRES_DB: hsa_til
+            POSTGRES_PASSWORD: password
+        ports:
+            - "4523:5432"
+        volumes:
+            - hsa_transactions_isolations_locks_pg_db:/var/lib/postgresql/data
+        networks:
+            hsa_transactions_isolations_locks_net:
+                ipv4_address: 172.16.120.11
+                
+    hsa_transactions_isolations_locks_percona_db:
+        container_name: hsa_transactions_isolations_locks_percona_db
+        image:          percona/percona-server:latest
+        environment:
+            - MYSQL_DATABASE=hsa_til
+            - MYSQL_USER=user
+            - MYSQL_PASSWORD=secret
+            - MYSQL_ROOT_PASSWORD=root
+        volumes:
+            - hsa_transactions_isolations_locks_percona_db:/var/lib/mysql
+        ports:
+            - "19999:3306"
+networks:
+    hsa_transactions_isolations_locks_net:
+        name: hsa_transactions_isolations_locks_net
+        ipam:
+            driver: default
+            config:
+            - subnet: 172.16.120.0/24
+
+volumes:
+    hsa_transactions_isolations_locks_pg_db: {}
+    hsa_transactions_isolations_locks_percona_db: {}
